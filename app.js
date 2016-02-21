@@ -1,53 +1,44 @@
-/*  create an array of possible moves
-    create an array of steps to exit
-    create and empty array from user input
-    need a function to generate the game
-    need a function that accepts a string
-        - statements to check that a string was inputed not a number
-    need a function that checks if the string is an allowed move
-        - statements to check against possible moves
-    need a function to check if that move is the next move
-        - statement to check if current move matches the next step
-    need a function to process move and display message
-        - if move doesnt match then the player must enter another move
-        - if it matches then the counter will advance to the next possible move
-    need a function that checks if all the play inputs match the game path
-        - checks to see if the gamepath is the same and if it is then a message appears
- */
+function startGame(status) {
 
-(function(){
+    // Global variables and generate game references
 
     var start = document.getElementById('start'),
         wrongSpot = document.getElementById('wrongSpot'),
         userInput = document.getElementById('userInput'),
-        acceptableMoves = ['left','right','up','down'],
+        acceptableMoves = ['left', 'right', 'up', 'down'],
         game = [],
         nextMove = [],
         x,
         newValue,
-        n = 0;
+        n = 0,
+        counter = 0;
 
-    for ( x = 1; x < 12; x++) {
+    if (status === undefined){
+        status = wrongSpot.innerText = 'Lets Go!!!';
+    }
+
+    wrongSpot.innerText = status;
+
+    for (x = 1; x <= 10; x++) {
 
         newValue = Math.ceil(Math.random() * 4);
-        console.log(newValue);
 
         if (newValue === 1) {
 
-        newValue = 'left';
-        game.push(newValue);
+            newValue = 'left';
+            game.push(newValue);
 
-        } else if( newValue === 2){
+        } else if (newValue === 2) {
 
             newValue = 'right';
             game.push(newValue);
 
-        } else if( newValue === 3){
+        } else if (newValue === 3) {
 
             newValue = 'up';
             game.push(newValue);
 
-        } else if( newValue === 4){
+        } else if (newValue === 4) {
 
             newValue = 'down';
             game.push(newValue);
@@ -56,49 +47,52 @@
 
     }
 
-    function init () {
+    function init() {
 
         'use strict';
 
-         // Error handling
+        // Error handling
 
-        function tryAgain(){
+        function tryAgain() {
 
-            wrongSpot.innerText = 'That move was not correct';
+            counter++;
 
+            if (counter === 4) {
+
+                startGame('You lost, try again');
+
+            } else {
+
+                wrongSpot.innerText = 'That move was not correct';
+            }
         }
 
         // Checks to see if move is next move
 
-        function message(){
+        function message() {
 
             var i;
 
-            for ( i = n; i < nextMove.length; i++) {
+            for (i = n; i < nextMove.length; i++) {
 
-                for( i = n; i < game.length; i++){
+                for (i = n; i < game.length; i++) {
 
                     if (game.indexOf(nextMove[i]) !== -1) {
 
-                        console.log('found');
+                        if (game[i] === nextMove[i]) {
 
-                        if (game[i] === nextMove[i]){
-
-                            console.log('right spot');
                             n++;
-                            return  cool();
+                            return cool();
 
                         } else {
 
-                        console.log('error');
-                        nextMove.pop();
-                        return tryAgain();
+                            nextMove.pop();
+                            return tryAgain();
 
                         }
 
                     } else {
 
-                        console.log('error');
                         nextMove.pop();
                         return tryAgain();
 
@@ -111,7 +105,7 @@
 
         // Get next input
 
-        function update (movement){
+        function update(movement) {
 
             nextMove.push(movement);
             message();
@@ -128,32 +122,43 @@
             if (acceptableMoves.lastIndexOf(a) !== -1) {
 
                 if (a === 'left') {
-                    console.log('ok');
-                    console.log(a);
+
                     return update(a);
 
                 } else if (a === 'right') {
-                    console.log('ok');
-                    console.log(a);
+
                     return update(a);
 
                 } else if (a === 'up') {
-                    console.log('ok');
-                    console.log(a);
+
                     return update(a);
 
                 } else if (a === 'down') {
-                    console.log('ok');
-                    console.log(a);
+
                     return update(a);
 
                 }
 
             } else {
 
-                console.log('that is not a valid move');
-
+                wrongSpot.innerText = 'That is not a valid move';
                 return tryAgain();
+            }
+
+        }
+
+        //  Checks if player has finished
+
+        function cool() {
+
+            if (nextMove.length === 10) {
+
+                wrongSpot.innerText = "You win!!!";
+
+            } else {
+
+                wrongSpot.innerText = 'That was correct. Keep going!!!';
+
             }
 
         }
@@ -161,11 +166,8 @@
         go();
     }
 
-    function cool(){
-
-        wrongSpot.innerText = 'That was correct. Keep going!!!';
-    }
-
     start.addEventListener('click', init);
 
-}());
+}
+
+startGame();
